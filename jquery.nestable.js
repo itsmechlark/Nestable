@@ -83,6 +83,9 @@
                 if (action === 'expand') {
                     list.expandItem(item);
                 }
+                
+                e.preventDefault();
+                
             });
 
             var onStartEvent = function(e)
@@ -142,6 +145,14 @@
             var data,
                 depth = 0,
                 list  = this;
+                getAttributes = function(dom)
+                { 
+                  var attributes = {};
+                  $.each( dom.get(0).attributes, function(i, attrib){
+                    if (attrib.name.match("^data-")) attributes[attrib.name.slice(5)] = attrib.value;
+                  });
+                  return attributes;
+                }
                 step  = function(level, depth)
                 {
                     var array = [ ],
@@ -149,7 +160,7 @@
                     items.each(function()
                     {
                         var li   = $(this),
-                            item = $.extend({}, li.data()),
+                            item = $.extend({}, getAttributes(li) ),
                             sub  = li.children(list.options.listNodeName);
                         if (sub.length) {
                             item.children = step(sub, depth + 1);
